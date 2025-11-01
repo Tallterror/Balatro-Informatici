@@ -238,7 +238,7 @@ SMODS.Joker{
 	key = 'Guglielmo',
 	unlocked = true,
 
-	config = { extra = {xmult = 1.2}},
+	config = { extra = {xmult = 1.5}},
 	loc_vars = function(self, info_queue, card)
 		return {
 			vars = {
@@ -261,15 +261,10 @@ SMODS.Joker{
 	cost = 10,
 
     	calculate = function(self, card, context)
- 		if context.post_trigger then
-			--G.E_MANAGER:add_event(Event({
-				--delay = 0.0,
-				--func = function()
-					return {
-                				xmult = card.ability.extra.xmult,
-					}
-				--end
-			--}))
-        	end
-    	end
+ 		if context.post_trigger && not context.end_of_round then
+			return {
+                xmult = card.ability.extra.xmult,
+			}
+        end
+    end
 }
