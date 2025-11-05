@@ -1,6 +1,6 @@
 SMODS.optional_features.cardareas.discard = true
 SMODS.optional_features.post_trigger = true
-
+SMODS.optional_features.hand_drawn = true
 
 SMODS.Atlas{
 	key = 'jokers',
@@ -13,12 +13,22 @@ SMODS.Atlas{
 SMODS.Joker{
 	key = 'affamato',
 	unlocked = true,
+
+	loc_vars = function(self, info_queue, card)
+		return {
+			vars = {
+				G.STATE
+			}
+		}
+	end,
+
 	loc_txt = {
 		name = 'Jolly Affamato',
 		text = {
 			'Se la mano scartata',
 			'ha solo {C:attention}1 figura{}, crea un',
-			'{C:tarot}tarocco{} casuale'
+			'{C:tarot}tarocco{} casuale',
+			'#1#'
 		}
 	},
 	atlas = 'jokers',
@@ -57,10 +67,10 @@ SMODS.Joker{
 		info_queue[#info_queue + 1] = G.P_CENTERS['c_death']
 		return{
 			vars = {
-  			(G.GAME.probabilities.normal or 1),
-  			card.ability.extra.oddL,
-			card.ability.extra.oddD,
-			card.ability.extra.active
+  				(G.GAME.probabilities.normal or 1),
+  				card.ability.extra.oddL,
+				card.ability.extra.oddD,
+				card.ability.extra.active
 			}
 		}
 	end,
@@ -143,9 +153,9 @@ SMODS.Joker{
 	loc_vars = function(self, info_queue, card)
 		return {
 			vars = {
-			card.ability.extra.xmult,
-			card.ability.extra.mult,
-			card.ability.extra.less	
+				card.ability.extra.xmult,
+				card.ability.extra.mult,
+				card.ability.extra.less,	
 			}
 		}
 	end,
@@ -162,6 +172,7 @@ SMODS.Joker{
 	rarity = 1,
 	cost = 4,
 	calculate = function(self, card, context)
+		
 		 if context.first_hand_drawn and not context.blueprint then
 			local eval = function() return G.GAME.current_round.hands_played == 0 and not G.RESET_JIGGLES end
 			juice_card_until(card, eval, true)
@@ -188,12 +199,22 @@ SMODS.Joker{
 SMODS.Joker{
 	key = 'Tranquillo',
 	unlocked = true,
+	config = { extra = {active = true, final = nil}},
+	loc_vars = function(self, info_queue, card)
+		return {
+			vars = {
+				card.ability.extra.active,
+				card.ability.extra.final,
+			}
+		}
+	end,
+	
 	loc_txt = {
 		name = 'Jolly Tranquillo',
 		text = {
-			'Crea il {C:planet}pianeta{} dell ultima',
-			'mano giocata se questa non è',
-			'ancora stata giocata'
+			'Se è stato giocato un solo tipo',
+			'di mano, crea il suo {C:planet}pianeta{}',
+			'alla fine del round'
 		}
 	},
 	atlas = 'jokers',
@@ -201,35 +222,42 @@ SMODS.Joker{
 	rarity = 1,
 	cost = 4,
 	calculate = function(self, card, context)
-		if context.before then
-			local play_more_than = (G.GAME.hands[context.scoring_name].played or 0)
-			for handname, values in pairs(G.GAME.hands) do
-                		if handname == context.scoring_name and values.played < play_more_than and SMODS.is_poker_hand_visible(handname) then
-                    			return
-                		end
-            		end
+		if context.first_hand_drawn and not context.blueprint then
+			local eval = function() return card.ability.extra.active == 0 end
+			juice_card_until(card, eval, true)
 		end
-		if context.post_joker then
-			if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
-				G.E_MANAGER:add_event(Event({
-					delay = 0.0,
-					func = function()
-						if G.GAME.last_hand_played then
-							local _planet = nil
-							for k, v in pairs(G.P_CENTER_POOLS.Planet) do
-								if v.config.hand_type == G.GAME.last_hand_played then
-									_planet = v.key
-								end
-							end
-							if _planet then
-								SMODS.add_card({ key = _planet })
-							end
-							G.GAME.consumeable_buffer = 0
-						end
-						return true
-					end
-				}))
+		if context.first_hand_drawn and not context.blueprint then
+			card.ability.extra.active = true
+			card.ability.extra.final = nil
+		end
+		if context.before and not context.blueprint then
+			if card.ability.extra.final ~= nil and card.ability.extra.final ~= G.GAME.last_hand_played then
+				card.ability.extra.active = false
 			end
+			card.ability.extra.final = G.GAME.last_hand_played
+		end	
+		if context.end_of_round and card.ability.extra.active and #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+			G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+            G.E_MANAGER:add_event(Event({
+                trigger = 'before',
+                delay = 0.0,
+                func = function()
+                    if G.GAME.last_hand_played then
+                        local _planet = nil
+                        for k, v in pairs(G.P_CENTER_POOLS.Planet) do
+                            if v.config.hand_type == G.GAME.last_hand_played then
+                                _planet = v.key
+                            end
+                        end
+                        if _planet then
+                            SMODS.add_card({ key = _planet })
+                        end
+                        G.GAME.consumeable_buffer = 0
+                    end
+                    return true
+                end
+            }))
+			card.ability.extra.active = false
 		end
 	end
 }
@@ -242,7 +270,7 @@ SMODS.Joker{
 	loc_vars = function(self, info_queue, card)
 		return {
 			vars = {
-			card.ability.extra.xmult,
+				card.ability.extra.xmult,
 			}
 		}
 	end,
@@ -261,10 +289,11 @@ SMODS.Joker{
 	cost = 10,
 
     	calculate = function(self, card, context)
- 		if context.post_trigger && not context.end_of_round then
+ 		if context.post_trigger and not context.end_of_round then
 			return {
                 xmult = card.ability.extra.xmult,
 			}
         end
     end
 }
+
