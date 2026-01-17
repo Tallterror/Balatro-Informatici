@@ -1,12 +1,7 @@
 SMODS.optional_features.cardareas.discard = true
 SMODS.optional_features.post_trigger = true
-<<<<<<< Updated upstream
-
-
-=======
 SMODS.optional_features.hand_drawn = true
 SMODS.optional_features.modify_ante = true
->>>>>>> Stashed changes
 SMODS.Atlas{
 	key = 'jokers',
 	path = 'jokers.png',
@@ -24,20 +19,13 @@ SMODS.Atlas{
 SMODS.Joker{
 	key = 'affamato',
 	unlocked = true,
-<<<<<<< Updated upstream
-=======
 	discovered = true;
->>>>>>> Stashed changes
 	loc_txt = {
 		name = 'Jolly Affamato',
 		text = {
 			'Se la mano scartata',
 			'ha solo {C:attention}1 figura{}, crea un',
-<<<<<<< Updated upstream
-			'{C:tarot}tarocco{} casuale'
-=======
 			'{C:tarot}tarocco{} casuale',
->>>>>>> Stashed changes
 		}
 	},
 	atlas = 'jokers',
@@ -208,8 +196,6 @@ SMODS.Joker{
 SMODS.Joker{
 	key = 'Tranquillo',
 	unlocked = true,
-<<<<<<< Updated upstream
-=======
 	discovered = true;
 	config = { extra = {active = true, final = nil}},
 	loc_vars = function(self, info_queue, card)
@@ -221,7 +207,6 @@ SMODS.Joker{
 		}
 	end,
 	
->>>>>>> Stashed changes
 	loc_txt = {
 		name = 'Jolly Tranquillo',
 		text = {
@@ -271,13 +256,8 @@ SMODS.Joker{
 SMODS.Joker{
 	key = 'Guglielmo',
 	unlocked = true,
-<<<<<<< Updated upstream
-
-	config = { extra = {xmult = 1.2}},
-=======
 	discovered = true;
 	config = { extra = {xmult = 1.5}},
->>>>>>> Stashed changes
 	loc_vars = function(self, info_queue, card)
 		return {
 			vars = {
@@ -300,19 +280,6 @@ SMODS.Joker{
 	cost = 10,
 
     	calculate = function(self, card, context)
-<<<<<<< Updated upstream
- 		if context.post_trigger then
-			--G.E_MANAGER:add_event(Event({
-				--delay = 0.0,
-				--func = function()
-					return {
-                				xmult = card.ability.extra.xmult,
-					}
-				--end
-			--}))
-        	end
-    	end
-=======
  		if context.post_trigger and not context.end_of_round then
 			return {
                 xmult = card.ability.extra.xmult,
@@ -568,7 +535,7 @@ SMODS.Joker{
 	loc_txt = {
 		name = 'Zaino vuoto',
 		text = {
-			'Alla fine del round aggiunge al joker:',
+			'All uscita del negozio aggiunge al joker:',
 			'{C:chips}+#4#{} chips per ogni {C:tarot}tarocco{} posseduto',
 			'{C:mult}+#5#{} molt per ogni {C:planet}pianeta{} posseduto',
 			'{X:mult,C:white}X#6#{} molt per ogni {C:spectral}carta spettrale{} posseduta',
@@ -592,15 +559,15 @@ SMODS.Joker{
 						if carta.ability.set == 'Tarot' then
 							card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.addchips
 							card:juice_up(0.3, 0.5)
-							return {message = "{C:chips}+#4#{}"}
+							return {message = 'potenziamento'}
 						end
 						if carta.ability.set == 'Planet' then
 							card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.addmult
-							return {message = "{C:mult}+#5#{}"}
+							return {message = 'potenziamento'}
 						end
 						if carta.ability.set == 'Spectral' then
 							card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.addxmult
-							return {message = "{X:mult,C:white}X#6#{}"}
+							return {message = 'potenziamento'}
 						end
 						return true
 					end
@@ -608,5 +575,4 @@ SMODS.Joker{
 			end
 		end							
 	end
->>>>>>> Stashed changes
 }
