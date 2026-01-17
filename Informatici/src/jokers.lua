@@ -1,10 +1,21 @@
 SMODS.optional_features.cardareas.discard = true
 SMODS.optional_features.post_trigger = true
+<<<<<<< Updated upstream
 
 
+=======
+SMODS.optional_features.hand_drawn = true
+SMODS.optional_features.modify_ante = true
+>>>>>>> Stashed changes
 SMODS.Atlas{
 	key = 'jokers',
 	path = 'jokers.png',
+	px = 71,
+	py = 95
+}
+SMODS.Atlas{
+	key = 'vanilla',
+	path = 'vanilla.png',
 	px = 71,
 	py = 95
 }
@@ -13,12 +24,20 @@ SMODS.Atlas{
 SMODS.Joker{
 	key = 'affamato',
 	unlocked = true,
+<<<<<<< Updated upstream
+=======
+	discovered = true;
+>>>>>>> Stashed changes
 	loc_txt = {
 		name = 'Jolly Affamato',
 		text = {
 			'Se la mano scartata',
 			'ha solo {C:attention}1 figura{}, crea un',
+<<<<<<< Updated upstream
 			'{C:tarot}tarocco{} casuale'
+=======
+			'{C:tarot}tarocco{} casuale',
+>>>>>>> Stashed changes
 		}
 	},
 	atlas = 'jokers',
@@ -51,6 +70,7 @@ SMODS.Joker{
 SMODS.Joker{
 	key = 'quadis',
 	unlocked = true,
+	discovered = true;
 	config = { extra = {oddL = 2, oddD = 4, active = true } },
 	loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS['c_lovers']
@@ -138,7 +158,7 @@ SMODS.Joker{
 SMODS.Joker{
 	key = 'Pinder',
 	unlocked = true,
-
+	discovered = true;
 	config = { extra = {xmult = 1.5, mult = 25, less = 5}},
 	loc_vars = function(self, info_queue, card)
 		return {
@@ -188,6 +208,20 @@ SMODS.Joker{
 SMODS.Joker{
 	key = 'Tranquillo',
 	unlocked = true,
+<<<<<<< Updated upstream
+=======
+	discovered = true;
+	config = { extra = {active = true, final = nil}},
+	loc_vars = function(self, info_queue, card)
+		return {
+			vars = {
+				card.ability.extra.active,
+				card.ability.extra.final,
+			}
+		}
+	end,
+	
+>>>>>>> Stashed changes
 	loc_txt = {
 		name = 'Jolly Tranquillo',
 		text = {
@@ -237,8 +271,13 @@ SMODS.Joker{
 SMODS.Joker{
 	key = 'Guglielmo',
 	unlocked = true,
+<<<<<<< Updated upstream
 
 	config = { extra = {xmult = 1.2}},
+=======
+	discovered = true;
+	config = { extra = {xmult = 1.5}},
+>>>>>>> Stashed changes
 	loc_vars = function(self, info_queue, card)
 		return {
 			vars = {
@@ -261,6 +300,7 @@ SMODS.Joker{
 	cost = 10,
 
     	calculate = function(self, card, context)
+<<<<<<< Updated upstream
  		if context.post_trigger then
 			--G.E_MANAGER:add_event(Event({
 				--delay = 0.0,
@@ -272,4 +312,301 @@ SMODS.Joker{
 			--}))
         	end
     	end
+=======
+ 		if context.post_trigger and not context.end_of_round then
+			return {
+                xmult = card.ability.extra.xmult,
+			}
+        end
+    end
+}
+--Joker di TaSupreme
+SMODS.Joker{
+	key = 'Biliardino',
+	unlocked = true,
+	discovered = true;
+	config = { extra = {chance = 1, add = 0.4, odd = 100, money = 0}},
+	loc_vars = function(self, info_queue, card)
+		local possibilita = 100
+		if card.ability.extra.chance * G.GAME.probabilities.normal <= 100 then
+			possibilita = card.ability.extra.chance * G.GAME.probabilities.normal
+		end
+		return {
+			vars = {
+				possibilita,
+				card.ability.extra.add,
+				card.ability.extra.odd,
+			}
+		}
+	end,
+
+	loc_txt = {
+		name = 'Biliardino',
+		text = {
+			'{C:green}#1# probabilità su #3#{} di',
+			'aggiungere un edizione a',
+			'una carda giocata,',
+			'la possibilità aumenta di {C:attention}#2#{}',
+			'per ogni {C:gold}dollaro{} speso,',
+			'{C:inactive}si resetta ogni ante{}',
+		}
+	},
+	atlas = 'jokers',
+	pos = {x = 3, y = 0},
+	rarity = 3,
+	cost = 6,
+    calculate = function(self, card, context)
+
+		if context.card_added and context.cardarea == G.jokers and card == self.card then
+			card.ability.extra.money = G.GAME.dollars
+		end
+ 		if context.before then
+			G.E_MANAGER:add_event(Event({
+            	--trigger = 'before',
+            	delay = 0.1,
+            	func = function()
+					for _, carta in ipairs(context.scoring_hand) do
+						if SMODS.pseudorandom_probability(card, 'biliardino', card.ability.extra.chance * G.GAME.probabilities.normal, card.ability.extra.odd) then
+							if not carta.edition and not carta.debuff then
+								G.E_MANAGER:add_event(Event({
+									delay = 0.1,
+									func = function()
+                						local edition = poll_edition('biliardino', nil, true, true,
+                    					{ 'e_polychrome', 'e_holo', 'e_foil' })
+                						carta:set_edition(edition, true) 
+                						carta:juice_up(0.3, 0.5)
+										return true
+									end,
+								}))
+							end
+						end
+					end
+                	return true
+            	end
+        	}))
+		end
+		if card.ability.extra.money > G.GAME.dollars then
+			card.ability.extra.chance = card.ability.extra.chance + card.ability.extra.add * (card.ability.extra.money - G.GAME.dollars)
+			card:juice_up(0.3, 0.5)
+		end
+		if card.ability.extra.money ~= G.GAME.dollars then
+			card.ability.extra.money = G.GAME.dollars
+		end
+		if context.modify_ante then
+			card.ability.extra.chance = 1
+		end
+    end
+}
+--Joker di Alessandro
+--SMODS.Joker{
+--	discovered = true,
+--	key = 'erkjo',
+--	atlas = 'jokers',
+--	pos = {x = 3, y = 1},
+--	rarity = 3,
+--	cost = 0,
+--	loc_txt = {
+--		name = 'erkJo',
+--		text = {
+--			'rimuove tutti i jolli',
+--			'dal negozio e li rimpiazza',
+--			'con jolli glitch'
+--		}
+--	},
+--	config = { extra = {removed_pool = []}}
+--	add_to_deck = function(self, card, initial, delay_sprites)
+--		card.ability.extra.removed_pool = SMODS.get_current_pool()
+--		SMODS.remove_pool(G.P_CENTER_POOLS, "joker")
+--		SMODS.insert_pool(G.P_CENTER_POOLS, "in_Error", false)
+--	end,
+--	remove_from_deck = function(self, card, from_debuff)
+--		SMODS.insert_pool(G.P_CENTER_POOLS, G.P_JOKER_RARITY_POOLS, false)
+--		SMODS.remove_pool(G.P_CENTER_POOLS, in_Error)
+--	end
+--}
+--Joker di Roberto
+SMODS.Joker{
+	key = 'Cavallo',
+	unlocked = true,
+	discovered = true;
+	config = { extra = {xmult = 1,addmult = 0.3}},
+	loc_vars = function(self, info_queue, card)
+		return {
+			vars = {
+				card.ability.extra.xmult,
+				card.ability.extra.addmult,
+				card.ability.extra.prova,
+			}
+		}
+	end,
+
+	loc_txt = {
+		name = 'Voldemort con la testa da cavallo',
+		text = {
+			'{X:mult,C:white}X#1#{} molt per ogni',
+			'9 giocato.',
+			'Aggiunge {X:mult,C:white}X#2#{} molt per ogni',
+			'9 scartato.',
+			'{C:inactive}si resetta alla fine del round{}'
+		}
+	},
+	atlas = 'jokers',
+	pos = {x = 4, y = 0},
+	soul_pos = {x = 4, y = 1},
+	rarity = 4,
+	cost = 10,
+
+    calculate = function(self, card, context)
+
+		if context.discard and not context.blueprint then
+			card.ability.extra.prova = context.other_card:get_id()
+			if context.other_card:get_id() == 9 then
+				G.E_MANAGER:add_event(Event({
+					delay = 0.2,
+					func = function()
+						card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.addmult
+						return true
+					end,
+				}))
+				return {
+					message = 'X' .. card.ability.extra.addmult,
+					colour = G.C.RED
+				}
+			end
+		end
+		
+ 		if context.individual and context.cardarea == G.play and not context.end_of_round then
+			return {
+                xmult = card.ability.extra.xmult,
+			}
+        end
+		if context.setting_blind then
+			card.ability.extra.xmult = 1
+		end
+		if context.end_of_round and context.cardarea == G.jokers then
+			card.ability.extra.xmult = 1
+			return {
+				message = 'Reset',
+			}
+		end
+    end
+}
+SMODS.Joker{
+	key = 'GruppoDiStudio',
+	unlocked = true,
+	discovered = true,
+	atlas = 'jokers',
+	pos = {x = 5, y = 0},
+	config = {extra = {chips = 15}},
+
+	loc_vars = function(self, info_queue, card)
+		return {
+			vars = {
+  				card.ability.extra.chips,
+				card.ability.extra.chips * (G.jokers and #G.jokers.cards or 0),
+			}
+		}
+	end,
+	loc_txt = {
+		name = 'Gruppo di studio',
+		text = {
+			'{C:chips}+#1#{} chips per ogni',
+			'joker posseduto.',
+			'{C:inactive}Attualmente {C:chips}+#2# {C:inactive}chips'
+		}
+	},
+	calculate = function(self, card, context)
+		if context.joker_main then
+			return { chips = card.ability.extra.chips * #G.jokers.cards }
+		end
+	end
+}
+
+--SMODS.Joker{
+--	key = "Error",
+--	unlocked = false;
+--	discovered = false;
+--	pool = {["in_error"] = true, ["Joker"] = false},
+--	config = { extra = {minx = 1, maxx = 9, miny = 1, maxy = 15}},
+--	loc_txt = {
+--		name = 'error',
+--		text = {
+--			'error'
+--		}
+--	},
+--	rarity = 1,
+--	cost = 0,
+--	atlas = 'vanilla',
+--	pos = {x = 1, y = 1},
+--	set_ability = function(self, card, initial, delay_sprites)
+--		card.children.center:set_sprite_pos({x = pseudorandom('error1', card.ability.extra.minx, card.ability.extra.maxx), y = pseudorandom('error2', card.ability.extra.miny, card.ability.extra.maxy)})
+--	end,
+--	calculate = function(self, card, context)
+--	end
+--}
+SMODS.Joker{
+	key = 'Zaino',
+	unlocked = true,
+	discovered = true,
+	rarity = 2,
+	atlas = 'jokers',
+	pos = {x = 5, y = 1},
+	config = {extra = {chips = 0,mult = 0,xmult = 1, addchips = 15, addmult = 3, addxmult = 0.1}},
+	
+	loc_vars = function(self, info_queue, card)
+		return {
+			vars = {
+  				card.ability.extra.chips,
+				card.ability.extra.mult,
+				card.ability.extra.xmult,
+				card.ability.extra.addchips,
+				card.ability.extra.addmult,
+				card.ability.extra.addxmult,
+			}
+		}
+	end,
+	loc_txt = {
+		name = 'Zaino vuoto',
+		text = {
+			'Alla fine del round aggiunge al joker:',
+			'{C:chips}+#4#{} chips per ogni {C:tarot}tarocco{} posseduto',
+			'{C:mult}+#5#{} molt per ogni {C:planet}pianeta{} posseduto',
+			'{X:mult,C:white}X#6#{} molt per ogni {C:spectral}carta spettrale{} posseduta',
+			'{C:inactive}Attualmente {C:chips}+#1# {C:inactive}chips,',
+			'{C:mult}+#2#{C:inactive} molt e {X:mult,C:white}X#3# {C:inactive} molt'
+		}
+	},
+	calculate = function(self, card, context)
+		if context.joker_main then
+			return {
+				chips = card.ability.extra.chips,
+				mult = card.ability.extra.mult,
+				xmult = card.ability.extra.xmult
+			}
+		end
+		if context.ending_shop then
+			for _, carta in pairs(G.consumeables.cards) do
+				G.E_MANAGER:add_event(Event({
+					delay = 0.2,
+					func = function()
+						if carta.ability.set == 'Tarot' then
+							card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.addchips
+							card:juice_up(0.3, 0.5)
+							return {message = "{C:chips}+#4#{}"}
+						end
+						if carta.ability.set == 'Planet' then
+							card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.addmult
+							return {message = "{C:mult}+#5#{}"}
+						end
+						if carta.ability.set == 'Spectral' then
+							card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.addxmult
+							return {message = "{X:mult,C:white}X#6#{}"}
+						end
+						return true
+					end
+				}))
+			end
+		end							
+	end
+>>>>>>> Stashed changes
 }
