@@ -6,38 +6,77 @@ SMODS.Challenge {
     	rules = {
         	custom = {
             		{ id = 'no_shop_jokers' },
-	    		{ id = 'no_reward_specific', value = 'Small' },
-            		{ id = 'no_reward_specific', value = 'Big' },
         	}
-   	},
+   		},
 	jokers = {
-        	{ id = 'j_quadis', eternal = true },
-    	},
-    	vouchers = {
-        	{ id = 'v_magic_trick' },
-        	{ id = 'v_illusion' },
-    	},
-    	restrictions = {
-    		banned_cards = {
-            		{ id = 'p_buffoon_normal_1', ids = {
-                		'p_buffoon_normal_1', 'p_buffoon_normal_2', 'p_buffoon_jumbo_1', 'p_buffoon_mega_1',
-            		}
-            	},
-	},
+        { id = 'j_in_quadis', eternal = true },
+    },
+    vouchers = {
+        { id = 'v_magic_trick' },
+        { id = 'v_illusion' },
+    },
+    restrictions = {
+    	banned_cards = {
+            {   id = 'p_buffoon_normal_1', ids = {
+                'p_buffoon_normal_1', 'p_buffoon_normal_2', 'p_buffoon_jumbo_1', 'p_buffoon_mega_1',
+            	}
+            },
+            { id = 'c_judgement' },
+            { id = 'c_wraith' },
+            { id = 'c_soul' },
+            { id = 'v_antimatter' },
+		},
         banned_tags = {
-            	{ id = 'tag_uncommon' },
-            	{ id = 'tag_rare' },
-            	{ id = 'tag_negative' },
-            	{ id = 'tag_foil' },
-            	{ id = 'tag_holographic' },
-            	{ id = 'tag_polychrome' },
-            	{ id = 'tag_buffoon' },
-            	{ id = 'tag_top_up' },
+            { id = 'tag_uncommon' },
+            { id = 'tag_rare' },
+            { id = 'tag_negative' },
+            { id = 'tag_foil' },
+            { id = 'tag_holographic' },
+            { id = 'tag_polychrome' },
+            { id = 'tag_buffoon' },
+            { id = 'tag_top_up' },
         },
         banned_other = {
-            	{ id = 'bl_final_heart', type = 'blind' },
+            { id = 'bl_final_heart', type = 'blind' },
            	{ id = 'bl_final_leaf',  type = 'blind' },
-            	{ id = 'bl_final_acorn', type = 'blind' },
+            { id = 'bl_final_acorn', type = 'blind' },
+        }
+    }
+}
+
+SMODS.Challenge {
+    	key = 'deletethis_2',
+    	loc_txt = {
+		name = ''	
+    	},
+	jokers = {
+        { id = 'j_in_erkjo', eternal = true , edition = 'negative'},
+    },
+    restrictions = {
+    	banned_cards = {
+            {   id = 'p_buffoon_normal_1', ids = {
+                'p_buffoon_normal_1', 'p_buffoon_normal_2', 'p_buffoon_jumbo_1', 'p_buffoon_mega_1',
+            	}
+            },
+            { id = 'c_judgement' },
+            { id = 'c_wraith' },
+            { id = 'c_soul' },
+            { id = 'v_antimatter' },
+		},
+        banned_tags = {
+            { id = 'tag_uncommon' },
+            { id = 'tag_rare' },
+            { id = 'tag_negative' },
+            { id = 'tag_foil' },
+            { id = 'tag_holographic' },
+            { id = 'tag_polychrome' },
+            { id = 'tag_buffoon' },
+            { id = 'tag_top_up' },
+        },
+        banned_other = {
+            { id = 'bl_final_heart', type = 'blind' },
+           	{ id = 'bl_final_leaf',  type = 'blind' },
+            { id = 'bl_final_acorn', type = 'blind' },
         }
     }
 }

@@ -1,0 +1,1 @@
+assert(SMODS.load_file("src/jokerDisplay/voldemortCavallo.lua"))()
