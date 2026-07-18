@@ -17,10 +17,10 @@ SMODS.Joker{
 	loc_txt = {
 		name = 'Voldemort con la testa da cavallo',
 		text = {
-			'Aggiunge {X:mult,C:white}X#1#{} molt per',
-			'9 scartato.',
-			'Assegna il suo {X:mult,C:white}Xmolt{} per',
-			'9 giocato.',
+			'Questo Jolly ottiene {X:mult,C:white}X#1#{} Molt',
+			'per ogni 9 scartato',
+			'Ogni 9 che giochi dà il suo',
+			'{X:mult,C:white}Xmolt{} quando assegna punti',
 			'{C:inactive}si resetta alla fine del round{}',
 			'{C:inactive}attualmente {X:mult,C:white}X#2#{} molt'
 		}

@@ -25,6 +25,7 @@ SMODS.Challenge {
             { id = 'c_wraith' },
             { id = 'c_soul' },
             { id = 'v_antimatter' },
+            { id = 'c_in_dagaz'}
 		},
         banned_tags = {
             { id = 'tag_uncommon' },
@@ -45,12 +46,18 @@ SMODS.Challenge {
 }
 
 SMODS.Challenge {
-    	key = 'deletethis_2',
-    	loc_txt = {
-		name = ''	
-    	},
+    key = 'deletethis_2',
+    loc_txt = {
+	    name = ''
+    },
 	jokers = {
-        { id = 'j_in_erkjo', eternal = true , edition = 'negative'},
+        { id = 'j_in_erkjo', eternal = true },
+    },
+    rules = {
+        modifiers = {
+            { id = 'dollars', value = 25 },
+            { id = 'joker_slots', value = 6 }
+        }
     },
     restrictions = {
     	banned_cards = {
@@ -61,7 +68,7 @@ SMODS.Challenge {
             { id = 'c_judgement' },
             { id = 'c_wraith' },
             { id = 'c_soul' },
-            { id = 'v_antimatter' },
+            { id = 'c_in_dagaz'}
 		},
         banned_tags = {
             { id = 'tag_uncommon' },
@@ -72,11 +79,6 @@ SMODS.Challenge {
             { id = 'tag_polychrome' },
             { id = 'tag_buffoon' },
             { id = 'tag_top_up' },
-        },
-        banned_other = {
-            { id = 'bl_final_heart', type = 'blind' },
-           	{ id = 'bl_final_leaf',  type = 'blind' },
-            { id = 'bl_final_acorn', type = 'blind' },
         }
     }
 }

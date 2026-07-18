@@ -7,7 +7,9 @@ SMODS.Blind{
             '25% alle chips richieste.'
         }
     },
-    boss_colour = HEX('333333'),
+    atlas = 'blinds',
+    pos = {x = 0, y = 0},
+    boss_colour = HEX('5333D3'),
     discovered = true,
     mult = 2,
     boss = {min = 4, max = 16},

@@ -3,14 +3,14 @@ SMODS.Joker{
 	key = 'biliardino',
 	unlocked = true,
 	discovered = true;
-	config = { chance = 0, spentMoney = 0, reminder = 0, final = { neededMoney = 2, addChance = 1, odd = 100}},
+	config = { extra = {chance = 0, spentMoney = 0, reminder = 0, final = { neededMoney = 2, addChance = 1, odd = 100}}},
 	loc_vars = function(self, info_queue, card)
 		return {
 			vars = {
-				card.ability.chance * G.GAME.probabilities.normal,
-				card.ability.final.odd,
-				card.ability.final.addChance,
-				card.ability.final.neededMoney,
+				card.ability.extra.chance * G.GAME.probabilities.normal,
+				card.ability.extra.final.odd,
+				card.ability.extra.final.addChance,
+				card.ability.extra.final.neededMoney,
 			}
 		}
 	end,
@@ -33,19 +33,19 @@ SMODS.Joker{
     calculate = function(self, card, context)
 
 		if context.setting_ability then
-			card.ability.reminder = card.ability.final.neededMoney
-			card.ability.spentMoney = 0
-			card.ability.chance = 0
+			card.ability.extra.reminder = card.ability.extra.final.neededMoney
+			card.ability.extra.spentMoney = 0
+			card.ability.extra.chance = 0
 		end
 
 		if context.modify_ante and context.ante_end then
-			card.ability.chance = 0
-			card.ability.spentMoney = 0
+			card.ability.extra.chance = 0
+			card.ability.extra.spentMoney = 0
 		end
 
  		if context.before then
 			for _, carta in ipairs(context.scoring_hand) do
-				if SMODS.pseudorandom_probability(card, 'biliardino', card.ability.chance * G.GAME.probabilities.normal, card.ability.final.odd) then
+				if SMODS.pseudorandom_probability(card, 'biliardino', card.ability.extra.chance * G.GAME.probabilities.normal, card.ability.extra.final.odd) then
 					if not carta.edition and not carta.debuff then
 						G.E_MANAGER:add_event(Event({
 							delay = 0.1,
@@ -66,15 +66,15 @@ SMODS.Joker{
 				delay = 0.1,
 				func = function()
 					local money = context.amount * -1
-					card.ability.spentMoney = card.ability.spentMoney + context.amount
-					if money < card.ability.reminder then
-						card.ability.reminder = card.ability.reminder - money
+					card.ability.extra.spentMoney = card.ability.extra.spentMoney + context.amount
+					if money < card.ability.extra.reminder then
+						card.ability.extra.reminder = card.ability.extra.reminder - money
 						return false
 					end
-					card.ability.chance = card.ability.chance + 1
+					card.ability.extra.chance = card.ability.extra.chance + 1
 					money = money - card.ability.reminder
-					card.ability.reminder = card.ability.final.neededMoney - (money % card.ability.final.neededMoney)
-					card.ability.chance = card.ability.chance + card.ability.final.addChance * round_number((money / card.ability.final.neededMoney),0)
+					card.ability.extra.reminder = card.ability.extra.final.neededMoney - (money % card.ability.extra.final.neededMoney)
+					card.ability.extra.chance = card.ability.extra.chance + card.ability.extra.final.addChance * round_number((money / card.ability.extra.final.neededMoney),0)
 					card:juice_up(0.3, 0.5)
 					return true
 				end,
@@ -87,14 +87,14 @@ SMODS.Joker{
         ---@type JDJokerDefinition
 		return {
 			text = {
-                { ref_table = "card.ability", ref_value = "chance", color = G.C.green },
+                { ref_table = "card.ability.extra", ref_value = "chance", color = G.C.green },
 				{ text = "/" },
-				{ ref_table = "card.ability.final", ref_value = "odd", color = G.C.GREEN },
+				{ ref_table = "card.ability.extra.final", ref_value = "odd", color = G.C.GREEN },
 			},
 			reminder_text = {
         		{ text = "(" },
 				{ text = "$", colour = G.C.GOLD },
-        		{ ref_table = "card.ability", ref_value = "spentMoney", color = G.C.GOLD },
+        		{ ref_table = "card.ability.extra", ref_value = "spentMoney", color = G.C.GOLD },
         		{ text = ")" },
     		}
 		}

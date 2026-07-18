@@ -47,6 +47,7 @@ SMODS.Joker{
 		if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
             if SMODS.pseudorandom_probability(card, 'quadis', G.GAME.probabilities.normal, card.ability.extra.oddL) then
 				card.ability.extra.active = true
+				G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
 				G.E_MANAGER:add_event(Event({
                     func = (function()
 						SMODS.add_card {
@@ -54,15 +55,16 @@ SMODS.Joker{
 							key = 'c_lovers',
                             key_append = 'quadis'
 						}
+						G.GAME.consumeable_buffer = 0
                         return true
                     end)
                 }))
-				G.GAME.consumeable_buffer = G.GAME.consumeable_buffer -1
 			end
 		end
 		if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
             if SMODS.pseudorandom_probability(card, 'quadis', G.GAME.probabilities.normal, card.ability.extra.oddD) then
 				card.ability.extra.active = true
+				G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
 				G.E_MANAGER:add_event(Event({
                 	func = (function()
             			SMODS.add_card {
@@ -70,10 +72,10 @@ SMODS.Joker{
 							key = 'c_death',
                 			key_append = 'quadis'
             			}
+						G.GAME.consumeable_buffer = 0
 						return true
                     end)
                 }))
-				G.GAME.consumeable_buffer = G.GAME.consumeable_buffer -1
 			end
 		end
 	end

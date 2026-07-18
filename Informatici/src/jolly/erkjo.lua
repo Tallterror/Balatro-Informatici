@@ -12,9 +12,9 @@ SMODS.Joker{
 			'rimuove tutti i jolli',
 			'dal negozio e li rimpiazza',
 			'con jolli glitch'
-		}
+		} 
 	},
-	config = { extra = {}},
+	config = { extra = {repetition = 1}},
 	calculate = function(self, card, context)
 		if not G.GAME then return end
         if not context.modify_shop_card then return end
@@ -23,13 +23,18 @@ SMODS.Joker{
 		local shop_card = context.card
         if shop_card.config.center.set ~= "Joker" then return end
 		if not (shop_card.config and shop_card.config.center) then return end
-		local new_card = SMODS.create_card({
-            set = "Joker",
-			key = "j_in_jollyGlitch",
-        })
-		if new_card and new_card.config and new_card.config.center then
-        	shop_card:set_ability(new_card.config.center.key)
-        end
-		SMODS.destroy_cards(new_card, true, true, true)
+        shop_card:set_ability("j_in_jollyGlitch")
+
+		local repetition = card.ability.extra.repetition
+		repeat
+			shop_card.cost = pseudorandom('errorCost2', 1, 99)
+			repetition = repetition - 1
+		until repetition <= 0 or shop_card.cost <= 30
+		if shop_card.cost > 30 then
+			card.ability.extra.repetition = card.ability.extra.repetition + 1
+		else
+			shop_card.cost = shop_card.cost / math.sqrt(card.ability.extra.repetition)
+			card.ability.extra.repetition = 1
+		end
 	end
 }
